@@ -4,7 +4,8 @@
   "description": "A webapp for logging numerical data and showing graphs of the data.",
   "main": "app.js",
   "scripts": {
-    "test": "mocha --reporter list test/",
+    "test": "mocha -R spec test/",
+    "coverage": "istanbul cover _mocha -- -u exports -R spec",
     "nodemon": "nodemon"
   },
   "repository": {
@@ -30,6 +31,7 @@
     "level": "~0.18"
   },
   "devDependencies": {
+    "istanbul": "^0.2.8",
     "mocha": "^1.18.2",
     "nodemon": "^1.0.17",
     "rimraf": "^2.2.8",

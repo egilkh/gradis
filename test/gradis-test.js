@@ -1,18 +1,21 @@
 'use strict';
 
 /* jshint node: true */
-/* global describe, it */
+/* global describe, it, after */
 
 // Some vars for later and setup.
-var ga = process.env.GRADIS_ADDR = 'ohnoes',
+var d = Date.now(),
+    ga = process.env.GRADIS_ADDR = 'localhost-' + d,
     gp = process.env.GRADIS_PORT = 7070,
-    gs = process.env.GRADIS_SECRET = 'gradis-secret-' + Date.now(),
+    gs = process.env.GRADIS_SECRET = 'gradis-secret-' + d,
     gf = process.env.GRADIS_FOLDER = '/tmp/',
-    gd = process.env.GRADIS_DBNAME = 'gradis-test-' + Date.now();
+    gd = process.env.GRADIS_DBNAME = 'gradis-test-' + d,
+    gi = 'gradis-identity-' + d;
 
 // Requires.
 var request = require('supertest'),
     assert = require('assert'),
+    rimraf = require('rimraf'),
     gradis = require('../');
 
 describe('Gradis', function () {
@@ -29,8 +32,10 @@ describe('Gradis', function () {
   });
 
   var agent = request.agent(gradis.app),
-      authHeader = 'Basic ' + new Buffer('gradis-test-user:' + gs).toString('base64'),
-      authHeaderWrong = 'Basic ' + new Buffer('gradis-test-user:nowtherightpassword').toString('base64');
+      // Craft a correct Authorization.
+      authHeader = 'Basic ' + new Buffer(gi + ':' + gs).toString('base64'),
+      // Craft an incorrect Authorization.
+      authHeaderWrong = 'Basic ' + new Buffer('randomuser:randompassword').toString('base64');
 
   describe('Auth', function () {
     it('should specify WWW-Authenticate header for responses', function (done) {
@@ -41,7 +46,7 @@ describe('Gradis', function () {
         .end(done);
     });
 
-    it('should not allow request with correct token', function (done) {
+    it('should not allow request with incorrect token', function (done) {
       agent
         .get('/')
         .set('Authorization', authHeaderWrong)
@@ -66,10 +71,31 @@ describe('Gradis', function () {
   describe('Routes', function () {
     it('should not find incorrect path', function (done) {
       agent
-        .get('/')
+        .get('/fake-and-unused-url')
         .set('Authorization', authHeader)
         .expect(404)
         .end(done);
     });
+
+    describe('API', function () {
+      it('should have self', function (done) {
+        agent
+          .get('/api/self')
+          .set('Authorization', authHeader)
+          .expect(200)
+          .expect('Content-Type', 'application/json')
+          .expect(function (res) {
+            assert.ok(res.body.identity, 'Identity was not returned.');
+            assert.equal(res.body.identity.name, gi, 'Identity mismtach');
+          })
+          .end(done);
+      });
+    });
+  });
+
+  // Remove the temp folder after the tests.
+  after(function () {
+    var path = gf + gd + '/';
+    rimraf.sync(path);
   });
 });

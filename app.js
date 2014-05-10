@@ -62,13 +62,13 @@ app.use(expressAuth.realm('Gradis'));
 app.use(function (req, res, next) {
   if(req.username && req.password !== config.secret) {
     // @todo This causes a inf loop, we can solve that later.
-    res
+    return res
       .header('WWW-Authenticate', 'Basic realm="Gradis"')
       .send(401)
       .end();
   }
 
-  next();
+  return next();
 });
 
 // Let static handle files first.
@@ -79,10 +79,35 @@ app.use(function (req, res, next) {
   return next(db.isOpen() ? null : new Error('DB is not ready yet.'));
 });
 
+// Create entry for identity if it doesn't exist.
+app.use(function (req, res, next) {
+  var key = 'identity:' + req.username;
+
+  db.get(key, function (err, val) {
+    if (err && err.notFound) {
+      var identity = { name: req.username, created: Date.now() };
+      db.put(key, identity, function (err) {
+        if (err) {
+          return next(err);
+        }
+
+        req.identity = val;
+        return next();
+      });
+    } else if (err) {
+      return next(err);
+    } else {
+      req.identity = val;
+      return next();
+    }
+  });
+});
+
 // Routes
 // ------
-
-
+app.get('/api/self', function (req, res) {
+  res.json(200, {identity: req.identity});
+});
 
 // 404 handler.
 app.use(function (req, res) {

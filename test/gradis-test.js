@@ -23,7 +23,7 @@ var request = require('supertest'),
 describe('gradis', function () {
 
   describe('Config', function () {
-    it('should change depending on environmentals', function () {
+    it('should set config based on environmentals', function () {
       gradis.config.addr.should.eql(ga);
       gradis.config.port.should.eql(gp);
       gradis.config.secret.should.eql(gs);
@@ -39,7 +39,7 @@ describe('gradis', function () {
       authHeaderWrong = 'Basic ' + new Buffer('randomuser:randompassword').toString('base64');
 
   describe('Auth', function () {
-    it('should specify WWW-Authenticate header for responses', function (done) {
+    it('should return WWW-Authenticate header without Authentication', function (done) {
       agent
         .get('/')
         .expect('WWW-Authenticate', 'Basic realm="gradis"')
@@ -79,7 +79,7 @@ describe('gradis', function () {
     });
 
     describe('API', function () {
-      it('should have self', function (done) {
+      it('should provide /api/self', function (done) {
         agent
           .get('/api/self')
           .set('Authorization', authHeader)
@@ -96,7 +96,7 @@ describe('gradis', function () {
           .end(done);
       });
 
-      it('should list identities in an array', function (done) {
+      it('should provide /api/identity', function (done) {
         agent
           .get('/api/identity')
           .set('Authorization', authHeader)

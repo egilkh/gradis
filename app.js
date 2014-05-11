@@ -150,6 +150,59 @@ app.get('/api/identity', function (req, res) {
   });
 });
 
+app.post('/api/add', expressBodyParser.json(), function (req, res, next) {
+  var values = req.body,
+      now = Date.now();
+
+  if (!(values instanceof Array)) {
+    return res.json(400, { message: 'Values sent should be an Array.' });
+  }
+
+  var valids = [],
+      errors = [];
+
+  // Only keep the valid values.
+  async.each(values, function (value, cb) {
+    var type = typeof(value);
+
+    if (type === 'number') {
+      valids.push([now, value]);
+      return cb(null);
+    } else if (type === 'object') {
+      async.each(Object.keys(value), function (k, cb) {
+        if (typeof(value[k]) !== 'number') {
+          errors.push(value[k]);
+          return cb(null);
+        }
+        k = isNumber(k) ? parseInt(k, 10) : now;
+
+        valids.push([k, value[k]]);
+        return cb(null);
+      }, function (err) {
+        return cb(err);
+      });
+    } else {
+      errors.push(value);
+      return cb(null);
+    }
+  }, function (err) {
+    if (err) {
+      return next(err);
+    }
+
+    async.each(valids, function (point, cb) {
+      var key = 'point:' + req.identity.name + ':' + point[0];
+      db.put(key, point, cb);
+    }, function (err) {
+      if (err) {
+        return next(err);
+      }
+
+      return res.json(200, {count: valids.length, errors: errors});
+    });
+  });
+});
+
 // 404 handler.
 app.use(function (req, res) {
   var message = 'Cannot ' + req.method + ' ' + req.path;

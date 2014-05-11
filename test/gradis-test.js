@@ -19,7 +19,7 @@ var request = require('supertest'),
     rimraf = require('rimraf'),
     gradis = require('../');
 
-describe('Gradis', function () {
+describe('gradis', function () {
 
   describe('Config', function () {
     it('should change depending on environmentals', function () {
@@ -41,7 +41,7 @@ describe('Gradis', function () {
     it('should specify WWW-Authenticate header for responses', function (done) {
       agent
         .get('/')
-        .expect('WWW-Authenticate', 'Basic realm="Gradis"')
+        .expect('WWW-Authenticate', 'Basic realm="gradis"')
         .expect(401)
         .end(done);
     });
@@ -50,7 +50,7 @@ describe('Gradis', function () {
       agent
         .get('/')
         .set('Authorization', authHeaderWrong)
-        .expect('WWW-Authenticate', 'Basic realm="Gradis"')
+        .expect('WWW-Authenticate', 'Basic realm="gradis"')
         .expect(401)
         .end(done);
     });

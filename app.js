@@ -27,7 +27,7 @@ var express = require('express'),
       addr: process.env.GRADIS_ADDR || 'localhost',
       port: process.env.GRADIS_PORT || 3000,
 
-      secret: process.env.GRADIS_SECRET || 'Gradis',
+      secret: process.env.GRADIS_SECRET || 'gradis',
       folder: process.env.GRADIS_FOLDER || __dirname + '/folder/', // Yeah, yeah.
       dbname: process.env.GRADIS_DBNAME || 'db',
 
@@ -91,14 +91,14 @@ app.use(expressCompress());
 app.use(expressBodyParser.json());
 
 // Ensure Authentication.
-app.use(expressAuth.realm('Gradis'));
+app.use(expressAuth.realm('gradis'));
 
 // Ensure password is same as secret.
 app.use(function (req, res, next) {
   if(req.username && req.password !== config.secret) {
     // @todo This causes a inf loop, we can solve that later.
     return res
-      .header('WWW-Authenticate', 'Basic realm="Gradis"')
+      .header('WWW-Authenticate', 'Basic realm="gradis"')
       .send(401)
       .end();
   }

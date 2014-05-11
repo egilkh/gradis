@@ -16,6 +16,7 @@
 // --------
 
 var express = require('express'),
+    async = require('async'),
     level = require('level'),
 
     expressBodyParser = require('body-parser'),

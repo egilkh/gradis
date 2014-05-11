@@ -87,9 +87,6 @@ if (config.env === 'production') {
 // Enable gzip compression.
 app.use(expressCompress());
 
-// Parse JSON body.
-app.use(expressBodyParser.json());
-
 // Ensure Authentication.
 app.use(expressAuth.realm('gradis'));
 

@@ -113,6 +113,30 @@ describe('gradis', function () {
           .end(done);
       });
 
+      it('should succeed on POST /api/add (correct values)', function (done) {
+        agent
+          .post('/api/add')
+          .set('Authorization', authHeader)
+          .send([1, 2, {123: 3}, 4, 1.1, 1.2, {'1234': 1.23}, '123', 'a', Date()])
+          .expect(200)
+          .expect(function (res) {
+            res.body.count.should.be.instanceOf(Number)
+              .and.equal(7);
+            res.body.errors.should.be.instanceOf(Array)
+              .and.lengthOf(3);
+          })
+          .end(done);
+      });
+
+      it('should fail on POST /api/add (bad data)', function (done) {
+        agent
+          .post('/api/add')
+          .send('I am the believer')
+          .set('Authorization', authHeader)
+          .expect(400)
+          .end(done);
+      });
+
     });
   });
 

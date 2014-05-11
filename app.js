@@ -75,6 +75,13 @@ db.getOrCreate = function (key, value, cb) {
   });
 };
 
+// Check if a value is a number.
+//
+// From http://stackoverflow.com/a/11480826
+var isNumber = function (n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+};
+
 // App configuration and middleware
 // --------------------------------
 app.set('env', config.env);

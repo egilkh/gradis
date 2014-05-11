@@ -5,6 +5,7 @@
 
 // Some vars for later and setup.
 var d = Date.now(),
+    ge = process.env.NODE_ENV = 'production',
     ga = process.env.GRADIS_ADDR = 'localhost-' + d,
     gp = process.env.GRADIS_PORT = 7070,
     gs = process.env.GRADIS_SECRET = 'gradis-secret-' + d,

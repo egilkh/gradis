@@ -57,6 +57,24 @@ db.readRange = function (prefix, cb) {
   });
 };
 
+db.getOrCreate = function (key, value, cb) {
+  db.get(key, function (err, val) {
+    if (err && err.notFound) {
+      db.put(key, value, function (err) {
+        if (err) {
+          return cb(err);
+        }
+
+        return cb(null, value);
+      });
+    } else if (err) {
+      return cb(err);
+    } else {
+      return cb(err, val);
+    }
+  });
+};
+
 // App configuration and middleware
 // --------------------------------
 app.set('env', config.env);
@@ -98,29 +116,20 @@ app.use(function (req, res, next) {
 
 // Create entry for identity if it doesn't exist.
 app.use(function (req, res, next) {
-  var key = 'identity:' + req.username;
-
-  db.get(key, function (err, val) {
-    if (err && err.notFound) {
-      var identity = {
+  var key = 'identity:' + req.username,
+      identity = {
         name: req.username,
         created: Date.now(),
         count: 0
       };
-      db.put(key, identity, function (err) {
-        if (err) {
-          return next(err);
-        }
 
-        req.identity = val;
-        return next();
-      });
-    } else if (err) {
+  db.getOrCreate(key, identity, function (err, identity) {
+    if (err) {
       return next(err);
-    } else {
-      req.identity = val;
-      return next();
     }
+
+    req.identity = identity;
+    next();
   });
 });
 

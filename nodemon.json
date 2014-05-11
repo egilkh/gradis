@@ -4,8 +4,9 @@
     "public/",
     ".git",
     "node_modules/**/node_modules",
-    "test",
-    "coverage"
+    "test/",
+    "coverage/",
+    "folder/"
   ],
   "env": {
     "NODE_ENV": "development",

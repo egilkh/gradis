@@ -40,6 +40,23 @@ var express = require('express'),
       keyEncoding: 'utf8'
     });
 
+// Helpers
+// -------
+db.readRange = function (prefix, cb) {
+  var results = [];
+
+  this.createReadStream({
+    start: prefix,
+    end: prefix + '~'
+  }).on('data', function (data) {
+    results.push(data.value);
+  }).on('error', function (err) {
+    return cb(err);
+  }).on('end', function() {
+    cb(null, results);
+  });
+};
+
 // App configuration and middleware
 // --------------------------------
 app.set('env', config.env);
@@ -85,7 +102,11 @@ app.use(function (req, res, next) {
 
   db.get(key, function (err, val) {
     if (err && err.notFound) {
-      var identity = { name: req.username, created: Date.now() };
+      var identity = {
+        name: req.username,
+        created: Date.now(),
+        count: 0
+      };
       db.put(key, identity, function (err) {
         if (err) {
           return next(err);
@@ -107,6 +128,12 @@ app.use(function (req, res, next) {
 // ------
 app.get('/api/self', function (req, res) {
   res.json(200, {identity: req.identity});
+});
+
+app.get('/api/identity', function (req, res) {
+  db.readRange('identity:', function (err, identities) {
+    res.json(200, identities);
+  });
 });
 
 // 404 handler.

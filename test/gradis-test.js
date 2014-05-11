@@ -15,19 +15,19 @@ var d = Date.now(),
 // Requires.
 var request = require('supertest'),
     assert = require('assert'),
+    should = require('should'),
     rimraf = require('rimraf'),
     gradis = require('../');
 
 describe('Gradis', function () {
 
   describe('Config', function () {
-    it('should change depending on environmentals', function (done) {
-      assert.equal(ga, gradis.config.addr);
-      assert.equal(gp, gradis.config.port);
-      assert.equal(gs, gradis.config.secret);
-      assert.equal(gf, gradis.config.folder);
-      assert.equal(gd, gradis.config.dbname);
-      done();
+    it('should change depending on environmentals', function () {
+      gradis.config.addr.should.eql(ga);
+      gradis.config.port.should.eql(gp);
+      gradis.config.secret.should.eql(gs);
+      gradis.config.folder.should.eql(gf);
+      gradis.config.dbname.should.eql(gd);
     });
   });
 
@@ -85,11 +85,33 @@ describe('Gradis', function () {
           .expect(200)
           .expect('Content-Type', 'application/json')
           .expect(function (res) {
-            assert.ok(res.body.identity, 'Identity was not returned.');
-            assert.equal(res.body.identity.name, gi, 'Identity mismtach');
+            res.body.identity.should.be.an.instanceOf(Object);
+            res.body.identity.should.have.property('name', gi);
+            res.body.identity.should.have.property('created');
+            res.body.identity.should.have.property('count')
+              .and.be.instanceOf(Object)
+              .and.equal(0);
           })
           .end(done);
       });
+
+      it('should list identities in an array', function (done) {
+        agent
+          .get('/api/identity')
+          .set('Authorization', authHeader)
+          .expect(200)
+          .expect('Content-Type', 'application/json')
+          .expect(function (res) {
+            res.body.should.be.instanceOf(Array)
+              .and.have.lengthOf(1);
+
+            var i = res.body[0];
+            i.should.be.instanceOf(Object);
+            i.should.have.property('name', gi);
+          })
+          .end(done);
+      });
+
     });
   });
 

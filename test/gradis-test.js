@@ -129,10 +129,7 @@ describe('gradis', function () {
           .send([1, 2, {123: 3}, 4, 1.1, 1.2, {'1234': 1.23}, '123', 'a', Date()])
           .expect(200)
           .expect(function (res) {
-            res.body.count.should.be.instanceOf(Number)
-              .and.equal(7);
-            res.body.errors.should.be.instanceOf(Array)
-              .and.lengthOf(3);
+            validateAddResponse(res, 7, 3);
           })
           .end(done);
       });

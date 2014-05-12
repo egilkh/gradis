@@ -90,7 +90,7 @@ describe('gradis', function () {
             res.body.identity.should.have.property('name', gi);
             res.body.identity.should.have.property('created');
             res.body.identity.should.have.property('count')
-              .and.be.instanceOf(Object)
+              .and.be.instanceOf(Number)
               .and.equal(0);
           })
           .end(done);

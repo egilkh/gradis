@@ -113,6 +113,15 @@ describe('gradis', function () {
           .end(done);
       });
 
+      var validateAddResponse = function (res, expectedCount, expectedErrors) {
+        res.body.should.have.property('count');
+        res.body.should.have.property('errors');
+        res.body.count.should.be.instanceOf(Number)
+          .and.equal(expectedCount);
+        res.body.errors.should.be.instanceOf(Array)
+          .and.lengthOf(expectedErrors);
+      };
+
       it('should succeed on POST /api/add (correct values)', function (done) {
         agent
           .post('/api/add')

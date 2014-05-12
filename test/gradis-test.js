@@ -143,6 +143,47 @@ describe('gradis', function () {
           .end(done);
       });
 
+      it('should succeed on GET /api/add/<value> (correct value)', function (done) {
+        agent
+          .get('/api/add/1.234')
+          .set('Authorization', authHeader)
+          .expect(200)
+          .expect(function (res) {
+            validateAddResponse(res, 1, 0);
+          })
+          .end(done);
+      });
+
+      it('should fail on GET /api/add/<value> (incorrect value)', function (done) {
+        agent
+          .get('/api/add/abc')
+          .set('Authorization', authHeader)
+          .expect(400)
+          .expect(function (res) {
+            validateAddResponse(res, 0, 1);
+          })
+          .end(done);
+      });
+
+      it('should succeed on GET /api/add/<value>/<timestamp> (correct values and timestamp)', function (done) {
+        agent
+          .get('/api/add/2.345/123123123')
+          .set('Authorization', authHeader)
+          .expect(200)
+          .expect(function (res) {
+            validateAddResponse(res, 1, 0);
+          })
+          .end(done);
+      });
+
+      it('should fail (404) on GET /api/add/<value>/<timestamp> (incorrect timestamp', function (done) {
+        agent
+          .get('/api/add/3.456/abcdef')
+          .set('Authorization', authHeader)
+          .expect(404)
+          .end(done);
+      });
+
     });
   });
 

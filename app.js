@@ -203,6 +203,24 @@ app.post('/api/add', expressBodyParser.json(), function (req, res, next) {
   });
 });
 
+app.get('/api/add/:value/:timestamp(\\d+)?', function (req, res, next) {
+  if (!isNumber(req.params.value)) {
+    return res.json(400, { message: 'Value is badly formatted.', count: 0, errors: [req.params.value] });
+  }
+
+  var ts = req.params.timestamp || Date.now(),
+      value = parseFloat(req.params.value),
+      key = 'point:' + req.identity.name + ':' + ts;
+
+  db.put(key, [ts, value], function (err) {
+    if (err) {
+      return next(err);
+    }
+
+    return res.json(200, { count: 1, errors: [] });
+  });
+});
+
 // 404 handler.
 app.use(function (req, res) {
   var message = 'Cannot ' + req.method + ' ' + req.path;

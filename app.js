@@ -208,7 +208,7 @@ app.get('/api/add/:value/:timestamp(\\d+)?', function (req, res, next) {
     return res.json(400, { message: 'Value is badly formatted.', count: 0, errors: [req.params.value] });
   }
 
-  var ts = req.params.timestamp || Date.now(),
+  var ts = req.params.timestamp ? parseInt(req.params.timestamp, 10) : Date.now(),
       value = parseFloat(req.params.value),
       key = 'point:' + req.identity.name + ':' + ts;
 

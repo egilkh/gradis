@@ -15,7 +15,6 @@ var d = Date.now(),
 
 // Requires.
 var request = require('supertest'),
-    assert = require('assert'),
     should = require('should'),
     rimraf = require('rimraf'),
     gradis = require('../');

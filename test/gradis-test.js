@@ -183,7 +183,33 @@ describe('gradis', function () {
           .end(done);
       });
 
+      it('should fail on GET /api/data (404)', function (done) {
+        // 9
+        agent
+          .get('/api/data')
+          .set('Authorization', authHeader)
+          .expect(404)
+          .end(done);
+      });
+
+      it('should succeed on GET /api/data/<list>', function (done) {
+        agent
+          .get('/api/data/' + gi)
+          .set('Authorization', authHeader)
+          .expect(200)
+          .expect(function (res) {
+            res.body.should.be.instanceOf(Array)
+              .and.lengthOf(1);
+            var i = res.body[0];
+            i.label.should.equal(gi);
+            i.data.should.be.instanceOf(Array)
+              .and.lengthOf(5);
+          })
+          .end(done);
+      });
+
     });
+
   });
 
   // Remove the temp folder after the tests.

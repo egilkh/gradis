@@ -221,6 +221,26 @@ app.get('/api/add/:value/:timestamp(\\d+)?', function (req, res, next) {
   });
 });
 
+app.get('/api/data/:list/:from(\\d+)?/:to(\\d+)?', function (req, res, next) {
+  var list = req.params.list.split(',');
+
+  async.map(list, function (identity, cb) {
+    var key = 'point:' + identity + ':';
+    db.readRange(key, function (err, values) {
+      cb(err, {
+        label: identity,
+        data: values
+      });
+    });
+  }, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    return res.json(200, results);
+  });
+});
+
 // 404 handler.
 app.use(function (req, res) {
   var message = 'Cannot ' + req.method + ' ' + req.path;

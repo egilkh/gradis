@@ -4,6 +4,8 @@
 
 A webapp for logging numerical data and showing graphs of the data.
 
+Does not ship with a frontend as of yet, working in progress.
+
 ## Notes
 
 * Uses a resolution of milliseconds.

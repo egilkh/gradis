@@ -28,7 +28,8 @@
     "compression": "^1.0.2",
     "express": "~4.1",
     "express-http-auth": "^0.1.0",
-    "level": "~0.18"
+    "leveldown": "^0.10.2",
+    "levelup": "^0.18.3"
   },
   "devDependencies": {
     "async": "^0.8.0",

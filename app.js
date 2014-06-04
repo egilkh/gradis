@@ -17,7 +17,7 @@
 
 var express = require('express'),
     async = require('async'),
-    level = require('level'),
+    level = require('levelup'),
 
     expressBodyParser = require('body-parser'),
     expressCompress = require('compression'),

@@ -1,5 +1,7 @@
 # gradis
 
+[![Build Status](https://travis-ci.org/egilkh/gradis.svg)](https://travis-ci.org/egilkh/gradis)
+
 A webapp for logging numerical data and showing graphs of the data.
 
 ## Notes

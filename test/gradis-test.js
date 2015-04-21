@@ -127,6 +127,7 @@ describe('gradis', function () {
           .set('Authorization', authHeader)
           .send([1, 2, {123: 3}, 4, 1.1, 1.2, {'1234': 1.23}, '123', 'a', Date()])
           .expect(200)
+          .expect('Content-Type', 'application/json; charset=utf-8')
           .expect(function (res) {
             validateAddResponse(res, 7, 3);
           })
@@ -139,6 +140,7 @@ describe('gradis', function () {
           .send('I am the believer')
           .set('Authorization', authHeader)
           .expect(400)
+          .expect('Content-Type', 'application/json; charset=utf-8')
           .end(done);
       });
 
@@ -147,6 +149,7 @@ describe('gradis', function () {
           .get('/api/add/1.234')
           .set('Authorization', authHeader)
           .expect(200)
+          .expect('Content-Type', 'application/json; charset=utf-8')
           .expect(function (res) {
             validateAddResponse(res, 1, 0);
           })
@@ -158,6 +161,7 @@ describe('gradis', function () {
           .get('/api/add/abc')
           .set('Authorization', authHeader)
           .expect(400)
+          .expect('Content-Type', 'application/json; charset=utf-8')
           .expect(function (res) {
             validateAddResponse(res, 0, 1);
           })
@@ -169,6 +173,7 @@ describe('gradis', function () {
           .get('/api/add/2.345/123123123')
           .set('Authorization', authHeader)
           .expect(200)
+          .expect('Content-Type', 'application/json; charset=utf-8')
           .expect(function (res) {
             validateAddResponse(res, 1, 0);
           })
@@ -180,6 +185,7 @@ describe('gradis', function () {
           .get('/api/add/3.456/abcdef')
           .set('Authorization', authHeader)
           .expect(404)
+          .expect('Content-Type', 'application/json; charset=utf-8')
           .end(done);
       });
 
@@ -189,6 +195,7 @@ describe('gradis', function () {
           .get('/api/data')
           .set('Authorization', authHeader)
           .expect(404)
+          .expect('Content-Type', 'application/json; charset=utf-8')
           .end(done);
       });
 
@@ -197,6 +204,7 @@ describe('gradis', function () {
           .get('/api/data/' + gi)
           .set('Authorization', authHeader)
           .expect(200)
+          .expect('Content-Type', 'application/json; charset=utf-8')
           .expect(function (res) {
             res.body.should.be.instanceOf(Array)
               .and.lengthOf(1);

@@ -1,6 +1,8 @@
 # gradis
 
 [![Build Status](https://travis-ci.org/egilkh/gradis.svg)](https://travis-ci.org/egilkh/gradis)
+[![Dependency Status](https://david-dm.org/egilkh/gradis.svg)](https://david-dm.org/egilkh/gradis)
+[![devDependency Status](https://david-dm.org/egilkh/gradis/dev-status.svg)](https://david-dm.org/egilkh/gradis#info=devDependencies)
 
 A webapp for logging numerical data and showing graphs of the data.
 

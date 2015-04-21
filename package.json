@@ -26,7 +26,7 @@
   "dependencies": {
     "body-parser": "1.x",
     "compression": "1.x",
-    "express": "4.x",
+    "express": "^4.12",
     "express-http-auth": "0.x",
     "leveldown": "0.x",
     "levelup": "0.x"
@@ -34,10 +34,10 @@
   "devDependencies": {
     "async": "0.x.x",
     "istanbul": "0.x.x",
-    "mocha": "1.x.x",
+    "mocha": "2.x.x",
     "nodemon": "1.x",
     "rimraf": "2.x",
-    "should": "3.x",
+    "should": "6.x",
     "supertest": "0.x"
   }
 }

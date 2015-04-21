@@ -26,7 +26,7 @@ var express = require('express'),
     // Server configuration.
     config = {
       addr: process.env.GRADIS_ADDR || 'localhost',
-      port: process.env.GRADIS_PORT || 3000,
+      port: parseInt(process.env.GRADIS_PORT || '3000', 10),
 
       secret: process.env.GRADIS_SECRET || 'gradis',
       folder: process.env.GRADIS_FOLDER || __dirname + '/folder/', // Yeah, yeah.

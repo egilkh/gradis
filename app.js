@@ -104,7 +104,7 @@ app.use(function (req, res, next) {
     // @todo This causes a inf loop, we can solve that later.
     return res
       .header('WWW-Authenticate', 'Basic realm="gradis"')
-      .send(401)
+      .status(401)
       .end();
   }
 
@@ -141,12 +141,12 @@ app.use(function (req, res, next) {
 // Routes
 // ------
 app.get('/api/self', function (req, res) {
-  res.json(200, {identity: req.identity});
+  res.json({identity: req.identity});
 });
 
 app.get('/api/identity', function (req, res) {
   db.readRange('identity:', function (err, identities) {
-    res.json(200, identities);
+    res.json(identities);
   });
 });
 
@@ -155,7 +155,7 @@ app.post('/api/add', expressBodyParser.json(), function (req, res, next) {
       now = Date.now();
 
   if (!(values instanceof Array)) {
-    return res.json(400, { message: 'Values sent should be an Array.' });
+    return res.status(400).json({ message: 'Values sent should be an Array.' });
   }
 
   var valids = [],
@@ -198,14 +198,14 @@ app.post('/api/add', expressBodyParser.json(), function (req, res, next) {
         return next(err);
       }
 
-      return res.json(200, {count: valids.length, errors: errors});
+      return res.json({count: valids.length, errors: errors});
     });
   });
 });
 
 app.get('/api/add/:value/:timestamp(\\d+)?', function (req, res, next) {
   if (!isNumber(req.params.value)) {
-    return res.json(400, { message: 'Value is badly formatted.', count: 0, errors: [req.params.value] });
+    return res.status(400).json({ message: 'Value is badly formatted.', count: 0, errors: [req.params.value] });
   }
 
   var ts = req.params.timestamp ? parseInt(req.params.timestamp, 10) : Date.now(),
@@ -217,7 +217,7 @@ app.get('/api/add/:value/:timestamp(\\d+)?', function (req, res, next) {
       return next(err);
     }
 
-    return res.json(200, { count: 1, errors: [] });
+    return res.json({ count: 1, errors: [] });
   });
 });
 
@@ -237,21 +237,21 @@ app.get('/api/data/:list/:from(\\d+)?/:to(\\d+)?', function (req, res, next) {
       return next(err);
     }
 
-    return res.json(200, results);
+    return res.json(results);
   });
 });
 
 // 404 handler.
 app.use(function (req, res) {
   var message = 'Cannot ' + req.method + ' ' + req.path;
-  res.json(404, { code: 404, message: message });
+  res.status(404).json({ code: 404, message: message });
 });
 
 // Error handler.
 app.use(function (err, req, res, next) {
   // Let next be unused here.
   // jshint unused: false
-  res.json(500, { code: 500, message: err.message, stack: err.stack.split('\n') });
+  res.status(500).json({ code: 500, message: err.message, stack: err.stack.split('\n') });
 });
 
 // Check if we are run directly or included.

@@ -24,20 +24,20 @@
   },
   "homepage": "https://github.com/egilkh/gradis",
   "dependencies": {
-    "body-parser": "^1.0.2",
-    "compression": "^1.0.2",
-    "express": "~4.1",
-    "express-http-auth": "^0.1.0",
-    "leveldown": "^0.10.2",
-    "levelup": "^0.18.3"
+    "body-parser": "1.x",
+    "compression": "1.x",
+    "express": "4.x",
+    "express-http-auth": "0.x",
+    "leveldown": "0.x",
+    "levelup": "0.x"
   },
   "devDependencies": {
-    "async": "^0.8.0",
-    "istanbul": "^0.2.8",
-    "mocha": "^1.18.2",
-    "nodemon": "^1.0.17",
-    "rimraf": "^2.2.8",
-    "should": "^3.3.1",
-    "supertest": "^0.12.1"
+    "async": "0.x.x",
+    "istanbul": "0.x.x",
+    "mocha": "1.x.x",
+    "nodemon": "1.x",
+    "rimraf": "2.x",
+    "should": "3.x",
+    "supertest": "0.x"
   }
 }

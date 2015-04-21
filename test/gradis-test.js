@@ -83,7 +83,7 @@ describe('gradis', function () {
           .get('/api/self')
           .set('Authorization', authHeader)
           .expect(200)
-          .expect('Content-Type', 'application/json')
+          .expect('Content-Type', 'application/json; charset=utf-8')
           .expect(function (res) {
             res.body.identity.should.be.an.instanceOf(Object);
             res.body.identity.should.have.property('name', gi);
@@ -100,7 +100,7 @@ describe('gradis', function () {
           .get('/api/identity')
           .set('Authorization', authHeader)
           .expect(200)
-          .expect('Content-Type', 'application/json')
+          .expect('Content-Type', 'application/json; charset=utf-8')
           .expect(function (res) {
             res.body.should.be.instanceOf(Array)
               .and.have.lengthOf(1);

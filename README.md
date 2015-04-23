@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/egilkh/gradis.svg)](https://travis-ci.org/egilkh/gradis)
 [![Dependency Status](https://david-dm.org/egilkh/gradis.svg)](https://david-dm.org/egilkh/gradis)
 [![devDependency Status](https://david-dm.org/egilkh/gradis/dev-status.svg)](https://david-dm.org/egilkh/gradis#info=devDependencies)
+[![Coverage Status](https://coveralls.io/repos/egilkh/gradis/badge.svg?branch=master)](https://coveralls.io/r/egilkh/gradis?branch=master)
 
 A webapp for logging numerical data and showing graphs of the data.
 

@@ -6,6 +6,7 @@
   "scripts": {
     "test": "mocha -R spec test/",
     "coverage": "istanbul cover _mocha -- -u exports -R spec",
+    "ci-test": "istanbul cover _mocha --report lcovonly -- && cat ./coverage/lcov.info | coveralls",
     "nodemon": "nodemon"
   },
   "repository": {
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "async": "0.x.x",
+    "coveralls": "^2.11.2",
     "istanbul": "0.x.x",
     "mocha": "2.x.x",
     "nodemon": "1.x",

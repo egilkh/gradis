@@ -7,7 +7,7 @@
 // ----
 
 // Hint/Lint should know we are using Node.js.
-/* jslint node: true */
+/* jshint node: true */
 
 // We prefer strict hint/lint.
 'use strict';

@@ -1,41 +1,87 @@
 'use strict';
 
 /* jshint node: true */
-/* global describe, it, after */
+/* global describe, it, before, after */
 
 // Some vars for later and setup.
 var d = Date.now(),
-    ge = process.env.NODE_ENV = 'production',
-    ga = process.env.GRADIS_ADDR = 'localhost-' + d,
-    gp = process.env.GRADIS_PORT = 7070,
-    gs = process.env.GRADIS_SECRET = 'gradis-secret-' + d,
-    gf = process.env.GRADIS_FOLDER = '/tmp/',
-    gd = process.env.GRADIS_DBNAME = 'gradis-test-' + d,
-    gi = 'gradis-identity-' + d;
+    ge,
+    ga,
+    gp,
+    gs,
+    gf,
+    gd,
+    gi,
+    defaultConfig = {
+      addr: 'localhost',
+      port: parseInt('3000', 10),
+
+      secret: 'gradis',
+      folder: process.cwd() + '/folder/', // Yeah, yeah.
+      dbname: 'db',
+
+      env: 'development',
+    };
+
+function setupTestConfig () {
+  ge = process.env.NODE_ENV = 'production';
+  ga = process.env.GRADIS_ADDR = 'localhost-' + d;
+  gp = process.env.GRADIS_PORT = 7070;
+  gs = process.env.GRADIS_SECRET = 'gradis-secret-' + d;
+  gf = process.env.GRADIS_FOLDER = '/tmp/';
+  gd = process.env.GRADIS_DBNAME = 'gradis-test-' + d;
+  gi = 'gradis-identity-' + d;
+}
 
 // Requires.
 var request = require('supertest'),
     should = require('should'),
-    rimraf = require('rimraf'),
-    gradis = require('../');
+    rimraf = require('rimraf');
 
-describe('gradis', function () {
+describe('Config', function () {
 
-  describe('Config', function () {
-    it('should set config based on environmentals', function () {
-      gradis.config.addr.should.eql(ga);
-      gradis.config.port.should.eql(gp);
-      gradis.config.secret.should.eql(gs);
-      gradis.config.folder.should.eql(gf);
-      gradis.config.dbname.should.eql(gd);
+  describe('without environmentals', function () {
+    it('should have default config with no environmentals', function () {
+      var config = require('../lib/config')();
+
+      config.should.eql(defaultConfig);
     });
   });
 
-  var agent = request.agent(gradis.app),
-      // Craft a correct Authorization.
-      authHeader = 'Basic ' + new Buffer(gi + ':' + gs).toString('base64'),
+  describe('with environmentals', function () {
+    before(function () {
+      setupTestConfig();
+    });
+
+    it('should change config', function () {
+      var config = require('../lib/config')();
+
+      config.addr.should.eql(ga);
+      config.port.should.eql(gp);
+      config.secret.should.eql(gs);
+      config.folder.should.eql(gf);
+      config.dbname.should.eql(gd);
+    });
+  });
+});
+
+describe('gradis', function () {
+  var gradis = null,
+      agent = null,
+      authHeader = '',
+      authHeaderWrong = '';
+
+  before(function () {
+    setupTestConfig();
+
+    gradis = require('../');
+    agent = request.agent(gradis.app);
+
+    // Craft a correct Authorization.
+    authHeader = 'Basic ' + new Buffer(gi + ':' + gs).toString('base64');
       // Craft an incorrect Authorization.
-      authHeaderWrong = 'Basic ' + new Buffer('randomuser:randompassword').toString('base64');
+    authHeaderWrong = 'Basic ' + new Buffer('randomuser:randompassword').toString('base64');
+  });
 
   describe('Auth', function () {
     it('should return WWW-Authenticate header without Authentication', function (done) {
@@ -135,8 +181,6 @@ describe('gradis', function () {
       });
 
       it('should succeed with error on POST /api/add (mixed values)', function (done) {
-        agent
-          .post('/api/add')
         agent
           .post('/api/add')
           .set('Authorization', authHeader)

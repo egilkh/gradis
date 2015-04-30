@@ -24,7 +24,7 @@ var express = require('express'),
     expressAuth = require('express-http-auth'),
 
     // Server configuration.
-    config = require('./lib/config.js'),
+    config = require('./lib/config.js')(),
 
     app = express(),
     db = level(config.folder + config.dbname, {

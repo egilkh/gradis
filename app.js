@@ -51,9 +51,8 @@ db.readRange = function (prefix, cb) {
     end: prefix + '~'
   }).on('data', function (data) {
     results.push(data.value);
-  }).on('error', function (err) {
-    return cb(err);
-  }).on('end', function() {
+  }).on('error', cb)
+  .on('end', function() {
     cb(null, results);
   });
 };
@@ -62,14 +61,8 @@ db.getOrCreate = function (key, value, cb) {
   db.get(key, function (err, val) {
     if (err && err.notFound) {
       db.put(key, value, function (err) {
-        if (err) {
-          return cb(err);
-        }
-
-        return cb(null, value);
+        return cb(err, value);
       });
-    } else if (err) {
-      return cb(err);
     } else {
       return cb(err, val);
     }
@@ -170,13 +163,16 @@ app.post('/api/add', expressBodyParser.json(), function (req, res, next) {
       return cb(null);
     } else if (type === 'object') {
       async.each(Object.keys(value), function (k, cb) {
+
         if (typeof(value[k]) !== 'number') {
           errors.push(value[k]);
           return cb(null);
         }
-        k = isNumber(k) ? parseInt(k, 10) : now;
 
-        valids.push([k, value[k]]);
+        // Set timestamp for the value.
+        var d = isNumber(k) ? parseInt(k, 10) : now;
+
+        valids.push([d, value[k]]);
         return cb(null);
       }, function (err) {
         return cb(err);

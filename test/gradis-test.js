@@ -125,11 +125,26 @@ describe('gradis', function () {
         agent
           .post('/api/add')
           .set('Authorization', authHeader)
-          .send([1, 2, {123: 3}, 4, 1.1, 1.2, {'1234': 1.23}, '123', 'a', Date()])
+          .send([1, 2, {123: 3}, 4, 1.1, 1.2, {'1234': 1.23}])
           .expect(200)
           .expect('Content-Type', 'application/json; charset=utf-8')
           .expect(function (res) {
-            validateAddResponse(res, 7, 3);
+            validateAddResponse(res, 7, 0);
+          })
+          .end(done);
+      });
+
+      it('should succeed with error on POST /api/add (mixed values)', function (done) {
+        agent
+          .post('/api/add')
+        agent
+          .post('/api/add')
+          .set('Authorization', authHeader)
+          .send([1, 2, {123: 3}, 4, 1.1, 1.2, 'a', Date(), {'1234': 1.23}, {1233: 'def1', 'def2': 1234}])
+          .expect(200)
+          .expect('Content-Type', 'application/json; charset=utf-8')
+          .expect(function (res) {
+            validateAddResponse(res, 8, 3);
           })
           .end(done);
       });
@@ -211,7 +226,7 @@ describe('gradis', function () {
             var i = res.body[0];
             i.label.should.equal(gi);
             i.data.should.be.instanceOf(Array)
-              .and.lengthOf(5);
+              .and.lengthOf(6);
           })
           .end(done);
       });

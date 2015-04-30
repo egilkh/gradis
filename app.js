@@ -24,16 +24,7 @@ var express = require('express'),
     expressAuth = require('express-http-auth'),
 
     // Server configuration.
-    config = {
-      addr: process.env.GRADIS_ADDR || 'localhost',
-      port: parseInt(process.env.GRADIS_PORT || '3000', 10),
-
-      secret: process.env.GRADIS_SECRET || 'gradis',
-      folder: process.env.GRADIS_FOLDER || __dirname + '/folder/', // Yeah, yeah.
-      dbname: process.env.GRADIS_DBNAME || 'db',
-
-      env: process.env.NODE_ENV || 'development'
-    },
+    config = require('./lib/config.js'),
 
     app = express(),
     db = level(config.folder + config.dbname, {

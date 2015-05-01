@@ -21,7 +21,7 @@ var express = require('express'),
 
     expressBodyParser = require('body-parser'),
     expressCompress = require('compression'),
-    expressAuth = require('express-http-auth'),
+    basicAuth = require('basic-auth'),
 
     // Server configuration.
     config = require('./lib/config.js')(),
@@ -79,18 +79,21 @@ if (config.env === 'production') {
 // Enable gzip compression.
 app.use(expressCompress());
 
-// Ensure Authentication.
-app.use(expressAuth.realm('gradis'));
-
 // Ensure password is same as secret.
 app.use(function (req, res, next) {
-  if(req.username && req.password !== config.secret) {
+
+  var credentials = basicAuth(req);
+
+  if(!credentials || credentials.pass !== config.secret) {
     // @todo This causes a inf loop, we can solve that later.
     return res
       .header('WWW-Authenticate', 'Basic realm="gradis"')
       .status(401)
       .end();
   }
+
+  req.username = credentials.name;
+  req.password = credentials.pass;
 
   return next();
 });
